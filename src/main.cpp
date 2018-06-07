@@ -1,6 +1,8 @@
 #include <sstream>
 #include "crow.h"
 #include "domain/domain.h"
+#include "helper.h"
+#include "router.h"
 
 int main()
 {
@@ -8,29 +10,14 @@ int main()
 
     app.get_middleware<DimainMiddleware>().setMessage("hello");
 
-    CROW_ROUTE(app, "/")
-    ([]() {
-        crow::json::wvalue list;
-        list["message"] = "Hello, World!";
-        return list;
-    });
 
-    CROW_ROUTE(app,"/api/domain/list")
-    ([](const crow::request& req) {
-        return  Domain::list_domain(req);
-    });
-
-    CROW_ROUTE(app,"/api/domain/hostname")
-    ([](const crow::request& req) {
-        return  Domain::get_hostname(req);
-    });
+    KAEL_ROUTE(app,"/api/domain/list",Domain::list_domain(req))
+    KAEL_ROUTE(app,"/api/domain/hostname",Domain::get_hostname(req))
+    KAEL_ROUTE(app,"/api/domain/create",Domain::create_domain(req))
 
     // enables all log
     app.loglevel(crow::LogLevel::DEBUG);
 
     //crow::logger::setHandler(std::make_shared<DimainLogHandler>());
-
-    app.port(8000)
-        .multithreaded()
-        .run();
+    app.port(8000).multithreaded().run();
 }

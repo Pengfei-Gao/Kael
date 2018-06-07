@@ -6,15 +6,18 @@
 #define CROW_ALL_DOMAIN_H
 
 #include <sstream>
-#include <libvirt/libvirt.h>
 #include "crow.h"
 #include "helper.h"
 #include "DomainException.h"
+#include <libvirt/libvirt.h>
+#include <libvirt/virterror.h>
+#include <libvirt/libvirt-qemu.h>
 
 class Domain {
 public:
     static crow::json::wvalue get_hostname(const crow::request& );
     static crow::json::wvalue list_domain(const crow::request& );
+    static crow::json::wvalue create_domain(const crow::request& );
     static virConnectPtr get_virconnetctptr(const char *);
 };
 

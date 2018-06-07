@@ -44,6 +44,27 @@ crow::json::wvalue Domain::list_domain(const crow::request& req) {
     return list;
 }
 
+crow::json::wvalue Domain::create_domain(const crow::request &req) {
+    crow::json::wvalue list;
+//    virDomainPtr domain;
+//    KAEL_TRY
+//        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+//        auto jsonObject = crow::json::load(req.body);
+//        KEAL_EMPTY_CHECK(jsonObject)
+//        KEAL_EMPTY_CHECK(jsonObject['xmlconfig'])
+//        char *xmlconfig = jsonObject['xmlconfig'].s().s_;
+//        domain = virDomainDefineXML(conn, xmlconfig);
+//        KEAL_THROW_EXP(!domain,DomainException,DOMAIN_DEFINITION_FAILED,"Domain definition failed")
+//        KEAL_THROW_EXP(virDomainCreate(domain) < 0,DomainException,DOMAIN_CANNOT_BOOT,"Cannot boot guest")
+//        list['domainname'] = virDomainName(domain);
+//        KEAL_ADD_MSG_TO_JSON(list);
+//    KAEL_CATCH(DomainException e)
+//        KEAL_SHOW_EXCEPTION_JSON(list);
+//    KAEL_CATCH_END
+//    virDomainFree(domain);
+    return list;
+}
+
 virConnectPtr Domain::get_virconnetctptr(const char *uri) {
     virConnectPtr conn;
     if(uri != NULL && uri[0]!='\0'){
@@ -52,8 +73,6 @@ virConnectPtr Domain::get_virconnetctptr(const char *uri) {
         uri = "qemu:///system";
         conn = virConnectOpen(uri);
     }
-    if(conn == NULL){
-        throw DomainException(LIBVIRT_CONNECT_FAILED,"libvirt connect open error");
-    }
+    KEAL_THROW_EXP(conn == NULL,DomainException,LIBVIRT_CONNECT_FAILED,"libvirt connect open error")
     return conn;
 }
