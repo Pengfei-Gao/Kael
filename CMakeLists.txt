@@ -46,6 +46,8 @@ set(PROJECT_INCLUDE_DIR
 
 include_directories("${PROJECT_INCLUDE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/cJSON")
+include_directories("/usr/include/")
 include_directories("/usr/include/")
 
 add_subdirectory(src)
