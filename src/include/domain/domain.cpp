@@ -11,7 +11,7 @@ crow::json::wvalue Domain::get_hostname(const crow::request& req) {
         virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
         host = virConnectGetHostname(conn);
         virConnectClose(conn);
-        list["host"] = host;
+        list["data"]["host"] = host;
         free(host);
         KEAL_ADD_MSG_TO_JSON(list);
     KAEL_CATCH(DomainException e)
@@ -32,9 +32,9 @@ crow::json::wvalue Domain::list_domain(const crow::request& req) {
 
         for (int i = 0; i < numDomains; i++)
         {
-            list["domains"][i] = activeDomains[i];
+            list["data"]["domains"][i] = activeDomains[i];
         }
-        list["total"] = numDomains;
+        list["data"]["total"] = numDomains;
         virConnectClose(conn);
         free(activeDomains);
         KEAL_ADD_MSG_TO_JSON(list);
@@ -57,7 +57,7 @@ crow::json::wvalue Domain::create_domain(const crow::request &req) {
         domain = virDomainDefineXML(conn, xmlconfig);
         KEAL_THROW_EXP(!domain,DomainException,DOMAIN_DEFINITION_FAILED,"Domain definition failed")
         KEAL_THROW_EXP(virDomainCreate(domain) < 0,DomainException,DOMAIN_CANNOT_BOOT,"Cannot boot guest")
-        //list["domain_id"] = virDomainGetID(domain);
+        //list["data"]["domain_id"] = virDomainGetID(domain);
         KEAL_ADD_MSG_TO_JSON(list);
     KAEL_CATCH(DomainException e)
         KEAL_SHOW_EXCEPTION_JSON(list);

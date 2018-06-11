@@ -7,7 +7,9 @@
 
 #include <sstream>
 #include "crow.h"
+#include "crow.h"
 #include "helper.h"
+#include "crow/json.h"
 #include "DomainException.h"
 #include <libvirt/libvirt.h>
 #include <libvirt/virterror.h>
@@ -51,14 +53,27 @@ struct DimainMiddleware
     {
     };
 
-    void before_handle(crow::request & /*req*/, crow::response & /*res*/, context & /*ctx*/)
+    void before_handle(crow::request &req, crow::response &res, context &ctx)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
     }
 
-    void after_handle(crow::request & /*req*/, crow::response & /*res*/, context & /*ctx*/)
+    void after_handle(crow::request &req, crow::response &res, context &ctx)
     {
-        // no-op
+        crow::json::wvalue list;
+        std::string content;
+        list["request"]["method"]           = crow::method_name(req.method);
+        list["request"]["raw_url"]          = req.raw_url;
+        list["request"]["url"]              = req.url;
+        list["request"]["body"]             = req.body;
+        list["request"]["cookie"]           = req.get_header_value("Cookie");
+        list["request"]["referer"]          = req.get_header_value("Referer");
+        list["request"]["User-Agent"]       = req.get_header_value("User-Agent");
+        list["request"]["Host"]             = req.get_header_value("Host");
+        list["response"]["body"]            = res.body;
+        list["response"]["json_value"]      = dump(res.json_value);
+        list["response"]["code"]            = res.code;
+        CROW_LOG_INFO << dump(list);
     }
 };
 
