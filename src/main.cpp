@@ -14,6 +14,8 @@ int main()
     KAEL_ROUTE(app,"/api/domain/hostname",Domain::get_hostname(req),GET,...)
     KAEL_ROUTE(app,"/api/domain/create",Domain::create_domain(req),POST,...)
 
+    KAEL_ROUTE(app,"/api/host/info",Domain::get_nodeinfo(req),GET,...)
+
     // enables all log
     app.loglevel(crow::LogLevel::INFO);
     //crow::logger::setHandler(std::make_shared<DimainLogHandler>());

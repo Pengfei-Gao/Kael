@@ -18,6 +18,7 @@
 class Domain {
 public:
     static crow::json::wvalue get_hostname(const crow::request& );
+    static crow::json::wvalue get_nodeinfo(const crow::request& );
     static crow::json::wvalue list_domain(const crow::request& );
     static crow::json::wvalue create_domain(const crow::request& );
     static virConnectPtr get_virconnetctptr(const char *);
@@ -73,7 +74,7 @@ struct DimainMiddleware
         list["response"]["body"]            = res.body;
         list["response"]["json_value"]      = dump(res.json_value);
         list["response"]["code"]            = res.code;
-        CROW_LOG_INFO << dump(list);
+        CROW_LOG_CRITICAL << dump(list);
     }
 };
 
