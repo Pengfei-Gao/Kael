@@ -36,7 +36,7 @@
 
 #define KEAL_EMPTY_CHECK(param) \
         if(!param){ \
-                throw DomainException(PARAMETER_INVALID,  "Parameter param can`t be empty!!"); \
+                throw DomainException(PARAMETER_INVALID,  "Parameter can`t be empty!!"); \
         }
 
 
@@ -46,9 +46,10 @@
         }
 
 
-//__VA_ARGS__
-#define KAEL_ROUTE(app,path,callback,...) \
+
+#define KAEL_ROUTE(app,path,callback,method,name,...) \
     CROW_ROUTE(app,path) \
+    .methods(#method ##_method) \
     ([](const crow::request& req,##__VA_ARGS__) { \
         return  callback; \
     });
