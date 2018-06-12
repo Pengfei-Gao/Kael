@@ -17,10 +17,16 @@
 
 class Domain {
 public:
-    static crow::json::wvalue get_hostname(const crow::request& );
-    static crow::json::wvalue get_nodeinfo(const crow::request& );
-    static crow::json::wvalue list_domain(const crow::request& );
-    static crow::json::wvalue create_domain(const crow::request& );
+    static crow::json::wvalue getHostname(const crow::request& );
+    static crow::json::wvalue getHostInfo(const crow::request& );
+    static crow::json::wvalue getNodeInfo(const crow::request& );
+    static crow::json::wvalue getDomainInfoById(const crow::request& ,int );
+    static crow::json::wvalue getDomainInfoByUuidOrName(const crow::request& ,std::string );
+    static crow::json::wvalue getDomainInfoByDomainPtr(virDomainPtr);
+
+    static crow::json::wvalue listDomain(const crow::request& );
+    static crow::json::wvalue listAllDomain(const crow::request& );
+    static crow::json::wvalue createDomain(const crow::request& );
     static virConnectPtr get_virconnetctptr(const char *);
 };
 
@@ -52,14 +58,15 @@ struct DimainMiddleware
     }
     struct context
     {
+
     };
 
-    void before_handle(crow::request &req, crow::response &res, context &ctx)
+    void before_handle(crow::request &/*req*/, crow::response &/*res*/, context & /*ctx*/)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
     }
 
-    void after_handle(crow::request &req, crow::response &res, context &ctx)
+    void after_handle(crow::request &req, crow::response &res, context & /*ctx*/)
     {
         crow::json::wvalue list;
         std::string content;
