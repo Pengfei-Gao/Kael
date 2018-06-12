@@ -17,6 +17,8 @@
 #define GET_NODE_INFO_FAILED 104
 #define LIST_DOMAIN_FAILED 105
 #define GET_DOMAIN_INFO_FAILED 106
+#define GET_DOMAIN_PTR_FAILED 107
+#define NO_DOMAIN 108
 
 
 
@@ -50,10 +52,10 @@
 
 
 
-#define KAEL_ROUTE(app,path,callback,method,name,...) \
+#define KAEL_ROUTE(app,path,callback,method,...) \
     CROW_ROUTE(app,path) \
     .methods(#method ##_method) \
-    ([](const crow::request& req,##__VA_ARGS__) { \
+    ([](const crow::request& req, ##__VA_ARGS__) { \
         return  callback; \
     });
 
