@@ -18,7 +18,10 @@
 class Domain {
 public:
     static crow::json::wvalue get_hostname(const crow::request& );
+    static crow::json::wvalue get_hostinfo(const crow::request& );
     static crow::json::wvalue get_nodeinfo(const crow::request& );
+    static crow::json::wvalue get_domain_info(const crow::request& ,int );
+
     static crow::json::wvalue list_domain(const crow::request& );
     static crow::json::wvalue create_domain(const crow::request& );
     static virConnectPtr get_virconnetctptr(const char *);
@@ -52,14 +55,15 @@ struct DimainMiddleware
     }
     struct context
     {
+
     };
 
-    void before_handle(crow::request &req, crow::response &res, context &ctx)
+    void before_handle(crow::request &/*req*/, crow::response &/*res*/, context & /*ctx*/)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
     }
 
-    void after_handle(crow::request &req, crow::response &res, context &ctx)
+    void after_handle(crow::request &req, crow::response &res, context & /*ctx*/)
     {
         crow::json::wvalue list;
         std::string content;
