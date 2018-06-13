@@ -53,7 +53,6 @@ crow::json::wvalue Domain::listAllDomain(const crow::request &req) {
             domain = virDomainLookupByID(conn, ids[i]);
             if(domain != NULL){
                 list["data"][i] = getDomainInfoByDomainPtr(domain,false);
-
             }
         }
         virConnectClose(conn);

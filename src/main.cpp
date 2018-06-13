@@ -13,8 +13,6 @@ int main()
     KAEL_ROUTE(app,"/api/domain/list",Domain::listDomain(req),GET,...)
     KAEL_ROUTE(app,"/api/node/hostname",Domain::getHostname(req),GET,...)
     KAEL_ROUTE(app,"/api/domain/create",Domain::createDomain(req),POST,...)
-
-
     KAEL_ROUTE(app,"/api/node/info",Domain::getNodeInfo(req),GET,...)
     KAEL_ROUTE(app,"/api/host/info",Domain::getHostInfo(req),GET,...)
 

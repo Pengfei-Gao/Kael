@@ -1,3 +1,3 @@
-[submodule "cJSON"]
-	path = cJSON
-	url = https://github.com/DaveGamble/cJSON.git
+[submodule "include/orm"]
+	path = include/orm
+	url = git@github.com:david-pp/tiny-orm.git
