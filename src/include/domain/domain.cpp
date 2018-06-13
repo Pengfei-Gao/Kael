@@ -20,6 +20,7 @@ crow::json::wvalue Domain::getHostname(const crow::request& req) {
 }
 
 crow::json::wvalue Domain::getHostInfo(const crow::request& req) {
+
     crow::json::wvalue list;
     unsigned long * libVer = NULL;
     KAEL_TRY
@@ -51,11 +52,8 @@ crow::json::wvalue Domain::listAllDomain(const crow::request &req) {
         for(int i = 0 ; i < count; i ++ ){
             domain = virDomainLookupByID(conn, ids[i]);
             if(domain != NULL){
-                list["data"][i]["id"] = virDomainGetID(domain);
-                list["data"][i]["name"] = virDomainGetName(domain);
-                list["data"][i]["max_memory"] = virDomainGetMaxMemory(domain);
-                list["data"][i]["max_vcpus"] = virDomainGetMaxVcpus(domain);
-                list["data"][i]["max_memory"] = virDomainGetMaxMemory(domain);
+                list["data"][i] = getDomainInfoByDomainPtr(domain,false);
+
             }
         }
         virConnectClose(conn);
@@ -69,7 +67,6 @@ crow::json::wvalue Domain::listAllDomain(const crow::request &req) {
 crow::json::wvalue Domain::listDomain(const crow::request& req) {
     crow::json::wvalue list;
     KAEL_TRY
-        char uuidstr[VIR_UUID_STRING_BUFLEN] = { 0 };
         virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
         virDomainPtr *domains;
         unsigned int flags = VIR_CONNECT_LIST_DOMAINS_PERSISTENT;
@@ -77,15 +74,7 @@ crow::json::wvalue Domain::listDomain(const crow::request& req) {
         KEAL_THROW_EXP(ret < 0,DomainException,LIST_DOMAIN_FAILED,"list domain failed!!")
         list["total"] = ret;
         for (int i = 0; i < ret; i++) {
-            list["data"][i]["id"] = virDomainGetID(domains[i]);
-            list["data"][i]["name"] = virDomainGetName(domains[i]);
-            list["data"][i]["max_memory"] = virDomainGetMaxMemory(domains[i]);
-            list["data"][i]["max_vcpus"] = virDomainGetMaxVcpus(domains[i]);
-            list["data"][i]["max_memory"] = virDomainGetMaxMemory(domains[i]);
-            ret = virDomainGetUUIDString(domains[i],uuidstr);
-            if(ret == 0){
-                list["data"][i]["uuidstr"] = uuidstr;
-            }
+            list["data"][i] = getDomainInfoByDomainPtr(domains[i],false);
             virDomainFree(domains[i]);
         }
         virConnectClose(conn);
@@ -103,7 +92,7 @@ crow::json::wvalue Domain::getDomainInfoById(const crow::request &req, int domai
         conn = get_virconnetctptr(req.url_params.get("uri"));
         virDomainPtr domainPtr = virDomainLookupByID(conn,domain_id);
         KEAL_THROW_EXP(domainPtr == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
-        list = getDomainInfoByDomainPtr(domainPtr);
+        list["data"] = getDomainInfoByDomainPtr(domainPtr,true);
         virDomainFree(domainPtr);
         KEAL_ADD_MSG_TO_JSON(list);
     KAEL_CATCH(DomainException e)
@@ -121,12 +110,8 @@ crow::json::wvalue Domain::getDomainInfoByUuidOrName(const crow::request &req, s
         if(domain == NULL){
             domain = virDomainLookupByUUID(conn,(const unsigned char *)uuidOrname.c_str());
         }
-        list["input"] = uuidOrname.c_str();
-        list["to"] = const_cast<unsigned char*>((unsigned char*)uuidOrname.c_str());
-        list["t1"] = uuidOrname.c_str();
-        list["to2"] = (const unsigned char*)(unsigned char*)uuidOrname.c_str();
         KEAL_THROW_EXP(domain == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
-        list = getDomainInfoByDomainPtr(domain);
+        list["data"] = getDomainInfoByDomainPtr(domain,true);
         KEAL_ADD_MSG_TO_JSON(list);
     KAEL_CATCH(DomainException e)
         KEAL_SHOW_EXCEPTION_JSON(list);
@@ -173,13 +158,8 @@ crow::json::wvalue Domain::createDomain(const crow::request &req) {
         domain = virDomainDefineXML(conn, xmlconfig);
         KEAL_THROW_EXP(!domain,DomainException,DOMAIN_DEFINITION_FAILED,"Domain definition failed")
         KEAL_THROW_EXP(virDomainCreate(domain) < 0,DomainException,DOMAIN_CANNOT_BOOT,"Cannot boot guest")
-        list["data"]["domain_id"]   = virDomainGetID(domain);
+        list["data"]   = getDomainInfoByDomainPtr(domain,true);
         virDomainGetInfo(domain,&info);
-        list["data"]["state"]       = info.state;
-        list["data"]["cpuTime"]     = info.cpuTime;
-        list["data"]["maxMem"]      = info.maxMem;
-        list["data"]["memory"]      = info.memory;
-        list["data"]["nrVirtCpu"]   = info.nrVirtCpu;
         virDomainFree(domain);
         KEAL_ADD_MSG_TO_JSON(list);
     KAEL_CATCH(DomainException e)
@@ -200,38 +180,40 @@ virConnectPtr Domain::get_virconnetctptr(const char *uri) {
     return conn;
 }
 
-crow::json::wvalue Domain::getDomainInfoByDomainPtr(virDomainPtr domainPtr) {
+crow::json::wvalue Domain::getDomainInfoByDomainPtr(virDomainPtr domainPtr,bool isNeedXML) {
     crow::json::wvalue list;
     unsigned char uuid[VIR_UUID_STRING_BUFLEN] = { 0 };
     char uuidstr[VIR_UUID_STRING_BUFLEN] = { 0 };
     int ret = virDomainGetUUID(domainPtr,uuid);
     if(ret == 0){
-        list["data"]["uuid"] = uuid;
+        list["uuid"] = uuid;
     }
     ret = virDomainGetUUIDString(domainPtr,uuidstr);
     if(ret == 0){
-        list["data"]["uuidstr"] = uuidstr;
+        list["uuidstr"] = uuidstr;
     }
     virDomainInfo domainInfo;;
     ret = virDomainGetInfo(domainPtr,&domainInfo);
     if(ret == 0 ){
-        list["data"]["state"]       = (long)domainInfo.state;
-        list["data"]["cpuUsed"]     = ((double)domainInfo.cpuTime/1000000000.0);
-        list["data"]["maxMem"]      = domainInfo.maxMem;
-        list["data"]["memory"]      = domainInfo.memory;
-        list["data"]["nrVirtCpu"]   = domainInfo.nrVirtCpu;
+        list["state"]       = (long)domainInfo.state;
+        list["cpuUsed"]     = ((double)domainInfo.cpuTime/1000000000.0);
+        list["maxMem"]      = domainInfo.maxMem;
+        list["memory"]      = domainInfo.memory;
+        list["nrVirtCpu"]   = domainInfo.nrVirtCpu;
     }
-    list["data"]["domain_id"]                   = virDomainGetID(domainPtr);
-    list["data"]["is_active"]                   = virDomainIsActive(domainPtr);
-    list["data"]["is_persistent"]               = virDomainIsPersistent(domainPtr);
-    list["data"]["is_update"]                   = virDomainIsUpdated(domainPtr);
-    list["data"]["name"]                        = virDomainGetName(domainPtr);
-    list["data"]["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
-    list["data"]["max_vcpus"]                   = virDomainGetMaxVcpus(domainPtr);
-    list["data"]["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
-    list["data"]["VIR_DOMAIN_XML_SECURE"]       = virDomainGetXMLDesc(domainPtr,1); //dump security sensitive information too
-    list["data"]["VIR_DOMAIN_XML_INACTIVE"]     = virDomainGetXMLDesc(domainPtr,2); //dump inactive domain information
-    list["data"]["VIR_DOMAIN_XML_UPDATE_CPU"]   = virDomainGetXMLDesc(domainPtr,4); //update guest CPU requirements according to host CPU
-    list["data"]["VIR_DOMAIN_XML_MIGRATABLE"]   = virDomainGetXMLDesc(domainPtr,8); //dump XML suitable for migration
+    list["id"]                   = virDomainGetID(domainPtr);
+    list["is_active"]                   = virDomainIsActive(domainPtr);
+    list["is_persistent"]               = virDomainIsPersistent(domainPtr);
+    list["is_update"]                   = virDomainIsUpdated(domainPtr);
+    list["name"]                        = virDomainGetName(domainPtr);
+    list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
+    list["max_vcpus"]                   = virDomainGetMaxVcpus(domainPtr);
+    list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
+    if(isNeedXML){
+        list["VIR_DOMAIN_XML_SECURE"]       = virDomainGetXMLDesc(domainPtr,1); //dump security sensitive information too
+        list["VIR_DOMAIN_XML_INACTIVE"]     = virDomainGetXMLDesc(domainPtr,2); //dump inactive domain information
+        list["VIR_DOMAIN_XML_UPDATE_CPU"]   = virDomainGetXMLDesc(domainPtr,4); //update guest CPU requirements according to host CPU
+        list["VIR_DOMAIN_XML_MIGRATABLE"]   = virDomainGetXMLDesc(domainPtr,8); //dump XML suitable for migration
+    }
     return list;
 }

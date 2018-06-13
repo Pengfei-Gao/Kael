@@ -22,11 +22,12 @@ public:
     static crow::json::wvalue getNodeInfo(const crow::request& );
     static crow::json::wvalue getDomainInfoById(const crow::request& ,int );
     static crow::json::wvalue getDomainInfoByUuidOrName(const crow::request& ,std::string );
-    static crow::json::wvalue getDomainInfoByDomainPtr(virDomainPtr);
+    static crow::json::wvalue getDomainInfoByDomainPtr(virDomainPtr,bool isNeedXML);
 
     static crow::json::wvalue listDomain(const crow::request& );
     static crow::json::wvalue listAllDomain(const crow::request& );
     static crow::json::wvalue createDomain(const crow::request& );
+
     static virConnectPtr get_virconnetctptr(const char *);
 };
 
