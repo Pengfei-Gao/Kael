@@ -20,6 +20,7 @@ crow::json::wvalue Domain::getHostname(const crow::request& req) {
 }
 
 crow::json::wvalue Domain::getHostInfo(const crow::request& req) {
+
     crow::json::wvalue list;
     unsigned long * libVer = NULL;
     KAEL_TRY

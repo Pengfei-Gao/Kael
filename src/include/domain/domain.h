@@ -27,6 +27,7 @@ public:
     static crow::json::wvalue listDomain(const crow::request& );
     static crow::json::wvalue listAllDomain(const crow::request& );
     static crow::json::wvalue createDomain(const crow::request& );
+
     static virConnectPtr get_virconnetctptr(const char *);
 };
 
