@@ -8,7 +8,7 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories("${PROJECT_SOURCE_DIR}/exception")
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}" )
-add_executable(domain main.cpp include/domain/domain.cpp include/domain/domain.h include/helper.h exception/DomainException.cpp exception/DomainException.h include/help.cpp router.h)
+add_executable(domain main.cpp include/domain/domain.cpp include/domain/domain.h include/helper.h exception/DomainException.cpp exception/DomainException.h include/help.cpp router.h include/network/network.cpp include/network/network.h include/middleware.h)
 
 #target_link_libraries(domain crow)
 target_link_libraries(domain ${Boost_LIBRARIES} ${LIBVIRT_LINK})

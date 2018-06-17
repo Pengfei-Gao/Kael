@@ -5,6 +5,14 @@
 #ifndef CROW_ALL_HELPER_H
 #define CROW_ALL_HELPER_H
 
+#include <sstream>
+#include "crow.h"
+#include "crow.h"
+#include "crow/json.h"
+#include "DomainException.h"
+#include <libvirt/libvirt.h>
+#include <libvirt/virterror.h>
+#include <libvirt/libvirt-qemu.h>
 #endif //CROW_ALL_HELPER_H
 
 
@@ -18,6 +26,7 @@
 #define LIST_DOMAIN_FAILED 105
 #define GET_DOMAIN_INFO_FAILED 106
 #define GET_DOMAIN_PTR_FAILED 107
+#define SHUTDOWN_DOMAINFAILD 108
 #define NO_DOMAIN 108
 
 

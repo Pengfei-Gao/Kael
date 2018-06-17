@@ -167,6 +167,71 @@ crow::json::wvalue Domain::createDomain(const crow::request &req) {
     return list;
 }
 
+crow::json::wvalue Domain::shutdownByUuidOrname(const crow::request &req,std::string uuidOrname) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domain = virDomainLookupByName(conn, uuidOrname.c_str());
+        KEAL_THROW_EXP(domain == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        int ret = virDomainShutdown(domain);
+        KEAL_THROW_EXP(ret == -1,DomainException,SHUTDOWN_DOMAINFAILD,"shutdown domain failed!!")
+        list = getDomainInfoByDomainPtr(domain,false);
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
+crow::json::wvalue Domain::destroyByUuidOrname(const crow::request &req,std::string uuidOrname) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domain = virDomainLookupByName(conn, uuidOrname.c_str());
+        KEAL_THROW_EXP(domain == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        int ret = virDomainDestroy(domain);
+        KEAL_THROW_EXP(ret == -1,DomainException,SHUTDOWN_DOMAINFAILD,"shutdown domain failed!!")
+        list = getDomainInfoByDomainPtr(domain,false);
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
+
+crow::json::wvalue Domain::shutdownById(const crow::request &req,int id) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domainPtr = virDomainLookupByID(conn,id);
+        KEAL_THROW_EXP(domainPtr == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        int ret = virDomainDestroy(domainPtr);
+        KEAL_THROW_EXP(ret == -1,DomainException,SHUTDOWN_DOMAINFAILD,"shutdown domain failed!!")
+        list = getDomainInfoByDomainPtr(domainPtr,false);
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
+crow::json::wvalue Domain::destroyById(const crow::request &req,int id) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domainPtr = virDomainLookupByID(conn,id);
+        KEAL_THROW_EXP(domainPtr == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        int ret = virDomainDestroy(domainPtr);
+        KEAL_THROW_EXP(ret == -1,DomainException,SHUTDOWN_DOMAINFAILD,"shutdown domain failed!!")
+        list = getDomainInfoByDomainPtr(domainPtr,false);
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
 virConnectPtr Domain::get_virconnetctptr(const char *uri) {
     virConnectPtr conn;
     if(uri != NULL && uri[0]!='\0'){
