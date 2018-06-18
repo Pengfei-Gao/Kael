@@ -24,6 +24,8 @@ public:
     static crow::json::wvalue destroyByUuidOrname(const crow::request& ,std::string);
     static crow::json::wvalue shutdownById(const crow::request& ,int );
     static crow::json::wvalue destroyById(const crow::request& ,int );
+    static crow::json::wvalue startById(const crow::request& ,int );
+    static crow::json::wvalue startByUuidOrname(const crow::request& ,std::string );
 
 
     static virConnectPtr get_virconnetctptr(const char *);

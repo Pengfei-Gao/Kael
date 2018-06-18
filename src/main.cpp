@@ -20,11 +20,13 @@ int main()
     KAEL_ROUTE(app,"/api/domain/<int>/shutdown",Domain::shutdownById(req,id),PUT,int id,...)
     KAEL_ROUTE(app,"/api/domain/<string>/destroy",Domain::destroyByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
     KAEL_ROUTE(app,"/api/domain/<int>/destroy",Domain::destroyById(req,id),PUT,int id,...)
+    KAEL_ROUTE(app,"/api/domain/<string>/start",Domain::startByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
+    KAEL_ROUTE(app,"/api/domain/<int>/start",Domain::startById(req,id),PUT,int id,...)
 
 
 
-    KAEL_ROUTE_REST(app,"/api/domain/<int>",Domain::getDomainInfoById(req,domain_id),int domain_id,...)
-    KAEL_ROUTE_REST(app,"/api/domain/<string>",Domain::getDomainInfoByUuidOrName(req,uuidOrname),std::string uuidOrname,...)
+    KAEL_ROUTE_ANY(app,"/api/domain/<int>",Domain::getDomainInfoById(req,domain_id),int domain_id,...)
+    KAEL_ROUTE_ANY(app,"/api/domain/<string>",Domain::getDomainInfoByUuidOrName(req,uuidOrname),std::string uuidOrname,...)
 
 
     // enables all log

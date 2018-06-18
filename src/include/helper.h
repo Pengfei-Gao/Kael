@@ -68,7 +68,7 @@
         return  callback; \
     });
 
-#define KAEL_ROUTE_REST(app,path,callback,...) \
+#define KAEL_ROUTE_ANY(app,path,callback,...) \
     KAEL_ROUTE(app,path,callback,GET, ##__VA_ARGS__) \
     KAEL_ROUTE(app,path,callback,POST, ##__VA_ARGS__) \
     KAEL_ROUTE(app,path,callback,PUT, ##__VA_ARGS__) \
