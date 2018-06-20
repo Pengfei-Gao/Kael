@@ -13,6 +13,9 @@
 #include <libvirt/libvirt.h>
 #include <libvirt/virterror.h>
 #include <libvirt/libvirt-qemu.h>
+#include <functional>
+
+
 #endif //CROW_ALL_HELPER_H
 
 
@@ -28,10 +31,16 @@
 #define GET_DOMAIN_PTR_FAILED 107
 #define SHUTDOWN_DOMAINFAILD 108
 #define NO_DOMAIN 108
+#define CANNOT_CHECK_GUEST_STATE 109 //Cannot check guest state
+#define CANNOT_SAVE_GUEST 110
+#define GET_ABS_PATH_FAIL 111
+#define UNABLE_TO_SAVE_DOMAIN 112
+#define UNABLE_TO_RESTORE_DOMAIN 113
+#define UNABLE_TO_FIND_DOMAIN_THAT_WAS_RESTORED 113
 
 
 
-
+#define DIRCTORY_SAPERATOR std::string("/")
 #define GET_MESSAGE(e) *boost::get_error_info<err_str>(e)
 #define GET_CODE(e) *boost::get_error_info<err_no>(e)
 

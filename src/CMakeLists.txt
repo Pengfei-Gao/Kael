@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project (lib)
 
-set(GCC_COVERAGE_LINK_FLAGS  "-lvirt -g -Wall")
+set(GCC_COVERAGE_LINK_FLAGS  "-lvirt -g -Wall -lboost_system -lboost_filesystem")
 set(GCC_COVERAGE_COMPILE_FLAGS  "-I /usr/include/libvirt/")
 
 include_directories("${PROJECT_SOURCE_DIR}/include")

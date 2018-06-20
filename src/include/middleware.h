@@ -22,10 +22,9 @@ struct middleware
     }
     struct context
     {
-
     };
 
-    void before_handle(crow::request &/*req*/, crow::response &/*res*/, context & /*ctx*/)
+    void before_handle(crow::request &/*req*/, crow::response &/*res*/, context &/*ctx*/)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
     }

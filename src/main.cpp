@@ -16,14 +16,21 @@ int main()
     KAEL_ROUTE(app,"/api/domain/create",Domain::createDomain(req),POST,...)
     KAEL_ROUTE(app,"/api/node/info",Domain::getNodeInfo(req),GET,...)
     KAEL_ROUTE(app,"/api/host/info",Domain::getHostInfo(req),GET,...)
+
     KAEL_ROUTE(app,"/api/domain/<string>/shutdown",Domain::shutdownByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
     KAEL_ROUTE(app,"/api/domain/<int>/shutdown",Domain::shutdownById(req,id),PUT,int id,...)
+
     KAEL_ROUTE(app,"/api/domain/<string>/destroy",Domain::destroyByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
     KAEL_ROUTE(app,"/api/domain/<int>/destroy",Domain::destroyById(req,id),PUT,int id,...)
+
     KAEL_ROUTE(app,"/api/domain/<string>/start",Domain::startByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
     KAEL_ROUTE(app,"/api/domain/<int>/start",Domain::startById(req,id),PUT,int id,...)
 
 
+    KAEL_ROUTE(app,"/api/domain/<string>/save",Domain::saveByUuidOrname(req,uuidOrname),POST,std::string uuidOrname,...)
+    KAEL_ROUTE(app,"/api/domain/<int>/save",Domain::saveById(req,id),POST,int id,...)
+
+    KAEL_ROUTE(app,"/api/domain/restore",Domain::restore(req),POST,...)
 
     KAEL_ROUTE_ANY(app,"/api/domain/<int>",Domain::getDomainInfoById(req,domain_id),int domain_id,...)
     KAEL_ROUTE_ANY(app,"/api/domain/<string>",Domain::getDomainInfoByUuidOrName(req,uuidOrname),std::string uuidOrname,...)

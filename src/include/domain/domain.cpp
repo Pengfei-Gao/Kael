@@ -171,7 +171,8 @@ crow::json::wvalue Domain::createDomain(const crow::request &req) {
 crow::json::wvalue Domain::shutdownByUuidOrname(const crow::request &req,std::string uuidOrname) {
     crow::json::wvalue list;
     KAEL_TRY
-        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));virDomainPtr domainPtr = virDomainLookupByName(conn, uuidOrname.c_str());
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domainPtr = virDomainLookupByName(conn, uuidOrname.c_str());
         if(domainPtr == NULL){
             domainPtr = virDomainLookupByUUID(conn,(const unsigned char *)uuidOrname.c_str());
         }
@@ -313,11 +314,77 @@ crow::json::wvalue Domain::getDomainInfoByDomainPtr(virDomainPtr domainPtr,bool 
     list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
     list["max_vcpus"]                   = virDomainGetMaxVcpus(domainPtr);
     list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
+    list["os_type"]                     = virDomainGetOSType(domainPtr);
     if(isNeedXML){
         list["VIR_DOMAIN_XML_SECURE"]       = virDomainGetXMLDesc(domainPtr,1); //dump security sensitive information too
         list["VIR_DOMAIN_XML_INACTIVE"]     = virDomainGetXMLDesc(domainPtr,2); //dump inactive domain information
         list["VIR_DOMAIN_XML_UPDATE_CPU"]   = virDomainGetXMLDesc(domainPtr,4); //update guest CPU requirements according to host CPU
         list["VIR_DOMAIN_XML_MIGRATABLE"]   = virDomainGetXMLDesc(domainPtr,8); //dump XML suitable for migration
     }
+    return list;
+}
+
+crow::json::wvalue Domain::saveById(const crow::request &req, int id) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virDomainInfoPtr info = NULL;
+        boost::filesystem::path current_path = boost::filesystem::current_path();
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domainPtr = virDomainLookupByID(conn,id);
+        KEAL_THROW_EXP(domainPtr == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        KEAL_THROW_EXP(virDomainGetInfo(domainPtr, info) < 0,DomainException,CANNOT_CHECK_GUEST_STATE,"Cannot check guest state")
+        KEAL_THROW_EXP(info->state == VIR_DOMAIN_SHUTOFF,DomainException,CANNOT_SAVE_GUEST,"Not saving guest that isn't running")
+        KEAL_THROW_EXP(current_path.empty() ,DomainException,GET_ABS_PATH_FAIL,"get path failed!!")
+        const char* domainName = virDomainGetName(domainPtr);
+        std::string file_path = current_path.string()  + DIRCTORY_SAPERATOR + std::string("domains") + DIRCTORY_SAPERATOR + std::string(domainName);
+        KEAL_THROW_EXP(virDomainSave(domainPtr, file_path.c_str()) < 0,DomainException,UNABLE_TO_SAVE_DOMAIN,"Unable to save guest")
+        list["file_path"] = file_path;
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
+crow::json::wvalue Domain::saveByUuidOrname(const crow::request &req, std::string uuidOrname) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        virDomainInfoPtr info = NULL;
+        boost::filesystem::path current_path = boost::filesystem::current_path();
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        virDomainPtr domainPtr = virDomainLookupByName(conn, uuidOrname.c_str());
+        if(domainPtr == NULL){
+            domainPtr = virDomainLookupByUUID(conn,(const unsigned char *)uuidOrname.c_str());
+        }
+        KEAL_THROW_EXP(domainPtr == NULL,DomainException,GET_DOMAIN_PTR_FAILED,"GET domain failed!!")
+        KEAL_THROW_EXP(virDomainGetInfo(domainPtr, info) < 0,DomainException,CANNOT_CHECK_GUEST_STATE,"Cannot check guest state")
+        KEAL_THROW_EXP(info->state == VIR_DOMAIN_SHUTOFF,DomainException,CANNOT_SAVE_GUEST,"Not saving guest that isn't running")
+        KEAL_THROW_EXP(current_path.empty() ,DomainException,GET_ABS_PATH_FAIL,"get path failed!!")
+        const char* domainName = virDomainGetName(domainPtr);
+        std::string file_path = current_path.string()  + DIRCTORY_SAPERATOR + std::string("domains") + DIRCTORY_SAPERATOR + std::string(domainName);
+        KEAL_THROW_EXP(virDomainSave(domainPtr, file_path.c_str()) < 0,DomainException,UNABLE_TO_SAVE_DOMAIN,"Unable to save guest")
+        list["file_path"] = file_path;
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
+    return list;
+}
+
+
+crow::json::wvalue Domain::restore(const crow::request &req) {
+    crow::json::wvalue list;
+    KAEL_TRY
+        auto Params =  crow::json::load(req.body);
+        virConnectPtr conn = get_virconnetctptr(req.url_params.get("uri"));
+        int id = virDomainRestore(conn, Params["path"].s().s_);
+        KEAL_THROW_EXP(id < 0,DomainException,UNABLE_TO_RESTORE_DOMAIN,"Unable to restore guest")
+        virDomainPtr domainPtr = virDomainLookupByID(conn, id);
+        KEAL_THROW_EXP(domainPtr == NULL,DomainException,UNABLE_TO_FIND_DOMAIN_THAT_WAS_RESTORED,"Cannot find guest that was restored")
+        list = getDomainInfoByDomainPtr(domainPtr,true);
+        KEAL_ADD_MSG_TO_JSON(list);
+    KAEL_CATCH(DomainException e)
+        KEAL_SHOW_EXCEPTION_JSON(list);
+    KAEL_CATCH_END
     return list;
 }

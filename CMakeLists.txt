@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project (crow_all)
+project (KEAL)
 
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -47,6 +47,9 @@ set(PROJECT_INCLUDE_DIR
 include_directories("${PROJECT_INCLUDE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/orm/include/")
+
+
+
 
 add_subdirectory(src)
 #add_subdirectory(examples)

@@ -7,6 +7,9 @@
 
 
 #include "helper.h"
+#include <boost/filesystem.hpp>
+
+using namespace boost::filesystem;
 
 class Domain {
 public:
@@ -20,13 +23,20 @@ public:
     static crow::json::wvalue listDomain(const crow::request& );
     static crow::json::wvalue listAllDomain(const crow::request& );
     static crow::json::wvalue createDomain(const crow::request& );
+
     static crow::json::wvalue shutdownByUuidOrname(const crow::request& ,std::string);
-    static crow::json::wvalue destroyByUuidOrname(const crow::request& ,std::string);
     static crow::json::wvalue shutdownById(const crow::request& ,int );
+
+    static crow::json::wvalue destroyByUuidOrname(const crow::request& ,std::string);
     static crow::json::wvalue destroyById(const crow::request& ,int );
+
     static crow::json::wvalue startById(const crow::request& ,int );
     static crow::json::wvalue startByUuidOrname(const crow::request& ,std::string );
 
+    static crow::json::wvalue saveById(const crow::request& ,int );
+    static crow::json::wvalue saveByUuidOrname(const crow::request& ,std::string );
+
+    static crow::json::wvalue restore(const crow::request&);
 
     static virConnectPtr get_virconnetctptr(const char *);
 };
