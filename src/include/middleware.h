@@ -27,6 +27,9 @@ struct middleware
     void before_handle(crow::request &/*req*/, crow::response &res, context &/*ctx*/)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
+        res.add_header("Access-Control-Allow-Origin","*");
+        res.add_header("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTION,HEAD,CONNECT,TRACE");
+        res.add_header("Access-Control-Allow-Origin","*");
     }
 
     void after_handle(crow::request &req, crow::response &res, context & /*ctx*/)
