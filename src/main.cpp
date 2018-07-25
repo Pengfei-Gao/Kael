@@ -11,26 +11,26 @@ int main()
 
     app.get_middleware<middleware>().setMessage("hello,KAEL");
 
-    KAEL_ROUTE(app,"/api/domain/list",Domain::listDomain(req),GET,...)
-    KAEL_ROUTE(app,"/api/node/hostname",Domain::getHostname(req),GET,...)
-    KAEL_ROUTE(app,"/api/domain/create",Domain::createDomain(req),POST,...)
-    KAEL_ROUTE(app,"/api/node/info",Domain::getNodeInfo(req),GET,...)
-    KAEL_ROUTE(app,"/api/host/info",Domain::getHostInfo(req),GET,...)
+    KEAL_ROUTE_T(app,"/api/domain/list",Domain::listDomain(req),GET,...)
+    KEAL_ROUTE_T(app,"/api/node/hostname",Domain::getHostname(req),GET,...)
+    KEAL_ROUTE_T(app,"/api/domain/create",Domain::createDomain(req),POST,...)
+    KEAL_ROUTE_T(app,"/api/node/info",Domain::getNodeInfo(req),GET,...)
+    KEAL_ROUTE_T(app,"/api/host/info",Domain::getHostInfo(req),GET,...)
 
-    KAEL_ROUTE(app,"/api/domain/<string>/shutdown",Domain::shutdownByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
-    KAEL_ROUTE(app,"/api/domain/<int>/shutdown",Domain::shutdownById(req,id),PUT,int id,...)
+    KEAL_ROUTE_T(app,"/api/domain/<string>/shutdown",Domain::shutdownByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
+    KEAL_ROUTE_T(app,"/api/domain/<int>/shutdown",Domain::shutdownById(req,id),PUT,int id,...)
 
-    KAEL_ROUTE(app,"/api/domain/<string>/destroy",Domain::destroyByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
-    KAEL_ROUTE(app,"/api/domain/<int>/destroy",Domain::destroyById(req,id),PUT,int id,...)
+    KEAL_ROUTE_T(app,"/api/domain/<string>/destroy",Domain::destroyByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
+    KEAL_ROUTE_T(app,"/api/domain/<int>/destroy",Domain::destroyById(req,id),PUT,int id,...)
 
-    KAEL_ROUTE(app,"/api/domain/<string>/start",Domain::startByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
-    KAEL_ROUTE(app,"/api/domain/<int>/start",Domain::startById(req,id),PUT,int id,...)
+    KEAL_ROUTE_T(app,"/api/domain/<string>/start",Domain::startByUuidOrname(req,uuidOrname),PUT,std::string uuidOrname,...)
+    KEAL_ROUTE_T(app,"/api/domain/<int>/start",Domain::startById(req,id),PUT,int id,...)
 
 
-    KAEL_ROUTE(app,"/api/domain/<string>/save",Domain::saveByUuidOrname(req,uuidOrname),POST,std::string uuidOrname,...)
-    KAEL_ROUTE(app,"/api/domain/<int>/save",Domain::saveById(req,id),POST,int id,...)
+    KEAL_ROUTE_T(app,"/api/domain/<string>/save",Domain::saveByUuidOrname(req,uuidOrname),POST,std::string uuidOrname,...)
+    KEAL_ROUTE_T(app,"/api/domain/<int>/save",Domain::saveById(req,id),POST,int id,...)
 
-    KAEL_ROUTE(app,"/api/domain/restore",Domain::restore(req),POST,...)
+    KEAL_ROUTE_T(app,"/api/domain/restore",Domain::restore(req),POST,...)
 
     KAEL_ROUTE_ANY(app,"/api/domain/<int>",Domain::getDomainInfoById(req,domain_id),int domain_id,...)
     KAEL_ROUTE_ANY(app,"/api/domain/<string>",Domain::getDomainInfoByUuidOrName(req,uuidOrname),std::string uuidOrname,...)
