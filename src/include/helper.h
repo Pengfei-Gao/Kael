@@ -77,11 +77,18 @@
         return  callback; \
     });
 
+#define KEAL_ROUTE_T(app,path,callback,method,...) \
+    KAEL_ROUTE(app,path,callback,method, ##__VA_ARGS__) \
+    KAEL_ROUTE(app,path,callback,OPTIONS, ##__VA_ARGS__)
+
+
+
 #define KAEL_ROUTE_ANY(app,path,callback,...) \
     KAEL_ROUTE(app,path,callback,GET, ##__VA_ARGS__) \
     KAEL_ROUTE(app,path,callback,POST, ##__VA_ARGS__) \
     KAEL_ROUTE(app,path,callback,PUT, ##__VA_ARGS__) \
-    KAEL_ROUTE(app,path,callback,DELETE, ##__VA_ARGS__)
+    KAEL_ROUTE(app,path,callback,DELETE, ##__VA_ARGS__) \
+    KAEL_ROUTE(app,path,callback,OPTIONS, ##__VA_ARGS__)
 
 typedef boost::error_info<struct tag_err_no, int> err_no;
 typedef boost::error_info<struct tag_err_str, std::string> err_str;

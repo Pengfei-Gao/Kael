@@ -24,7 +24,7 @@ struct middleware
     {
     };
 
-    void before_handle(crow::request &/*req*/, crow::response &/*res*/, context &/*ctx*/)
+    void before_handle(crow::request &/*req*/, crow::response &res, context &/*ctx*/)
     {
         CROW_LOG_DEBUG << " - MESSAGE: " << message;
     }
@@ -44,6 +44,8 @@ struct middleware
         list["response"]["body"]            = res.body;
         list["response"]["json_value"]      = dump(res.json_value);
         list["response"]["code"]            = res.code;
+        res.add_header("Access-Control-Allow-Origin","*");
+        res.add_header("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTION,HEAD,CONNECT,TRACE");
         CROW_LOG_CRITICAL << dump(list);
     }
 };
