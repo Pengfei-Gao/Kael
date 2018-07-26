@@ -295,7 +295,7 @@ crow::json::wvalue Domain::getDomainInfoByDomainPtr(virDomainPtr domainPtr,bool 
     }
     ret = virDomainGetUUIDString(domainPtr,uuidstr);
     if(ret == 0){
-        list["uuidstr"] = uuidstr;
+        list["uuidStr"] = uuidstr;
     }
     virDomainInfo domainInfo;;
     ret = virDomainGetInfo(domainPtr,&domainInfo);
@@ -307,14 +307,14 @@ crow::json::wvalue Domain::getDomainInfoByDomainPtr(virDomainPtr domainPtr,bool 
         list["nrVirtCpu"]   = domainInfo.nrVirtCpu;
     }
     list["id"]                   = virDomainGetID(domainPtr);
-    list["is_active"]                   = virDomainIsActive(domainPtr);
-    list["is_persistent"]               = virDomainIsPersistent(domainPtr);
-    list["is_update"]                   = virDomainIsUpdated(domainPtr);
+    list["isActive"]                   = virDomainIsActive(domainPtr);
+    list["isPersistent"]               = virDomainIsPersistent(domainPtr);
+    list["isUpdate"]                   = virDomainIsUpdated(domainPtr);
     list["name"]                        = virDomainGetName(domainPtr);
-    list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
-    list["max_vcpus"]                   = virDomainGetMaxVcpus(domainPtr);
-    list["max_memory"]                  = virDomainGetMaxMemory(domainPtr);
-    list["os_type"]                     = virDomainGetOSType(domainPtr);
+    list["maxMemory"]                  = virDomainGetMaxMemory(domainPtr);
+    list["maxVcpus"]                   = virDomainGetMaxVcpus(domainPtr);
+    list["maxMemory"]                  = virDomainGetMaxMemory(domainPtr);
+    list["osType"]                     = virDomainGetOSType(domainPtr);
     if(isNeedXML){
         list["VIR_DOMAIN_XML_SECURE"]       = virDomainGetXMLDesc(domainPtr,1); //dump security sensitive information too
         list["VIR_DOMAIN_XML_INACTIVE"]     = virDomainGetXMLDesc(domainPtr,2); //dump inactive domain information

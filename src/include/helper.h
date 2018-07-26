@@ -19,7 +19,7 @@
 #endif //CROW_ALL_HELPER_H
 
 
-#define LIBVIRT_SUCCESS 0
+#define LIBVIRT_SUCCESS 200
 
 #define LIBVIRT_CONNECT_FAILED 100
 #define PARAMETER_INVALID 101
@@ -79,7 +79,7 @@
 
 #define KEAL_ROUTE_T(app,path,callback,method,...) \
     KAEL_ROUTE(app,path,callback,method, ##__VA_ARGS__) \
-    KAEL_ROUTE(app,path,callback,OPTIONS, ##__VA_ARGS__)
+//    KAEL_ROUTE(app,path,callback,OPTIONS, ##__VA_ARGS__)
 
 
 

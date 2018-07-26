@@ -45,6 +45,8 @@ struct middleware
         list["response"]["json_value"]      = dump(res.json_value);
         list["response"]["code"]            = res.code;
         res.add_header("Access-Control-Allow-Origin","*");
+        res.add_header("Access-Control-Request-Headers","content-type,xfilecategory,xfilename,xfilesize,X-ACCESS-TOKEN,X-URL-PATH");
+        res.add_header("Access-Control-Allow-Headers","content-type,xfilecategory,xfilename,xfilesize,X-ACCESS-TOKEN,X-URL-PATH");
         res.add_header("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTION,HEAD,CONNECT,TRACE");
         CROW_LOG_CRITICAL << dump(list);
     }
